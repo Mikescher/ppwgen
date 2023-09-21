@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>warnings</Nullable>
+        <AssemblyName>ppwgen</AssemblyName>
+        <RootNamespace>PronouncablePasswordGenerator</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="digrams.xml" />
+      <Resource Include="digrams.xml" />
+      <None Remove="units.xml" />
+      <Resource Include="units.xml" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+<units>
+	<unit text="a">2</unit>
+	<unit text="b">0</unit>
+	<unit text="c">0</unit>
+	<unit text="d">0</unit>
+	<unit text="e">6</unit>
+	<unit text="f">0</unit>
+	<unit text="g">0</unit>
+	<unit text="h">0</unit>
+	<unit text="i">2</unit>
+	<unit text="j">0</unit>
+	<unit text="k">0</unit>
+	<unit text="l">0</unit>
+	<unit text="m">0</unit>
+	<unit text="n">0</unit>
+	<unit text="o">2</unit>
+	<unit text="p">0</unit>
+	<unit text="r">0</unit>
+	<unit text="s">0</unit>
+	<unit text="t">0</unit>
+	<unit text="u">2</unit>
+	<unit text="v">0</unit>
+	<unit text="w">0</unit>
+	<unit text="x">8</unit>
+	<unit text="y">3</unit>
+	<unit text="z">0</unit>
+	<unit text="ch">16</unit>
+	<unit text="gh">16</unit>
+	<unit text="ph">16</unit>
+	<unit text="rh">16</unit>
+	<unit text="sh">16</unit>
+	<unit text="th">16</unit>
+	<unit text="wh">16</unit>
+	<unit text="qu">16</unit>
+	<unit text="ck">24</unit>
+</units>
