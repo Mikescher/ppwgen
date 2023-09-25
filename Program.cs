@@ -5,11 +5,13 @@ namespace PronouncablePasswordGenerator;
 
 public static class Program
 {
+    public const string VERSION = "1.1";
+    
     public static void Main()
     {
         var prof = GetProfile();
 
-        var rng = RandomNumberGenerator.Create();
+        var rng = prof.Seed != null ? new DeterministicRandomGenerator(prof.Seed.Value) : RandomNumberGenerator.Create();
         
         for (int i = 0; i < prof.Count; i++)
         {
@@ -96,6 +98,48 @@ public static class Program
                 {
                     p.Count = countnum;
                     continue;
+                }
+
+                if (arg.StartsWith("--seed=") && int.TryParse(arg.Substring("--seed=".Length), out var seednum))
+                {
+                    p.Seed = seednum;
+                    continue;
+                }
+
+                if (arg == "--help")
+                {
+                    Console.WriteLine("./ppwgen - PronouncablePasswordGenerator.");
+                    Console.WriteLine("");
+                    Console.WriteLine("# (forked from KeePass PronouncablePassword plugin)");
+                    Console.WriteLine("");
+                    Console.WriteLine("Usage: ppwgen");
+                    Console.WriteLine("       ppwgen <minlength>");
+                    Console.WriteLine("       ppwgen [minlength] --count=<c>");
+                    Console.WriteLine("       ppwgen --version");
+                    Console.WriteLine("       ppwgen --help");
+                    Console.WriteLine("");
+                    Console.WriteLine("Options:");
+                    Console.WriteLine("  --length=<len>");
+                    Console.WriteLine("  --digits");
+                    Console.WriteLine("  --no-digits");
+                    Console.WriteLine("  --mc,  --mixed-case");
+                    Console.WriteLine("  --uc,  --upper-case");
+                    Console.WriteLine("  --lc,  --lower-case");
+                    Console.WriteLine("  --rc,  --random-case");
+                    Console.WriteLine("  --rmc, --random-mixed-case");
+                    Console.WriteLine("  --mp,  --more-pronouncable");
+                    Console.WriteLine("  --symbols");
+                    Console.WriteLine("  --count=<c>");
+                    Console.WriteLine("  --seed=<s>");
+                    Environment.Exit(0);
+                    return new Profile();
+                }
+
+                if (arg == "--version")
+                {
+                    Console.WriteLine("ppwgen " + VERSION);
+                    Environment.Exit(0);
+                    return new Profile();
                 }
 
             }

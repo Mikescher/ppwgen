@@ -12,4 +12,5 @@ public class Profile
     public bool Morepronounceable = false;
     public string Symbols = "";
     public int Count = 1;
+    public int? Seed = null;
 }

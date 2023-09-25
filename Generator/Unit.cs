@@ -93,28 +93,27 @@ public class Unit
     /// <param name="notflags">Flags which must not be present on the new unit.</param>
     private void Init(PRNG prng, UnitFlags flags, UnitFlags notflags)
     {
-        XmlNode randomunit = null;
+        (string, int)? randomunit = null;
         if (flags > 0 || notflags > 0)
         {
-            ArrayList candidates = new ArrayList();
-            foreach (XmlNode node in Data.UnitsData["units"].ChildNodes)
+            var candidates = new List<(string, int)>();
+            foreach (var unit in Data.UNITS)
             {
-                int unitflags;
-                if (!int.TryParse(node.InnerText, out unitflags)) throw new Exception("Generation of random unit failed due to data inconsistencies!");
-                if ((flags == 0 || ((int)flags & unitflags) > 0) && (notflags == 0 || ((int)notflags & unitflags) == 0)) candidates.Add(node);
+                int unitflags = unit.Value;
+                if ((flags == 0 || ((int)flags & unitflags) > 0) && (notflags == 0 || ((int)notflags & unitflags) == 0)) candidates.Add((unit.Key, unit.Value));
             }
 
             if (candidates.Count == 0) throw new Exception("No units were found fitting given criteria.");
-            randomunit = (XmlNode)candidates[prng.Next(0, candidates.Count)];
+            var v = Data.UNITS.ElementAt(prng.Next(0, Data.UNITS.Count));
+            randomunit = (v.Key, v.Value);
         }
         else
         {
-            randomunit = Data.UnitsData["units"].ChildNodes[prng.Next(0, Data.UnitsData["units"].ChildNodes.Count)];
+            var v = Data.UNITS.ElementAt(prng.Next(0, Data.UNITS.Count));
+            randomunit = (v.Key, v.Value);
         }
-        Text = randomunit.Attributes["text"].Value;
-        int randomunitflags;
-        if (int.TryParse(randomunit.InnerText, out randomunitflags)) Flags = (UnitFlags)randomunitflags;
-        else throw new Exception("Generation of random unit failed due to data inconsistencies!");
+        Text = randomunit.Value.Item1;
+        Flags = (UnitFlags)randomunit.Value.Item2;
     }
 
     /// <summary>
@@ -124,18 +123,7 @@ public class Unit
     public void Init(string text)
     {
         Text = text.ToLower();
-        string flagtext;
-        try
-        {
-            flagtext = Data.UnitsData.SelectSingleNode("/units/unit[@text='" + Text + "']").InnerText;
-        }
-        catch (NullReferenceException)
-        {
-            throw new ArgumentException(Text + " is not a valid unit.");
-        }
-        int flags;
-        if (int.TryParse(flagtext, out flags)) Flags = (UnitFlags)flags;
-        else throw new ArgumentException(Text + " is not a valid unit.");
+        Flags = (UnitFlags)Data.UNITS[Text];
     }
 
     /// <summary>

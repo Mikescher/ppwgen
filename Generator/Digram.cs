@@ -122,54 +122,52 @@ public class Digram
     {
         FirstUnit = first;
 
-        XmlNode candidates = Data.DigramsData.SelectSingleNode("/digrams/unit[@text='" + FirstUnit.Text + "']");
-        if (candidates == null || candidates.ChildNodes.Count == 0) throw new Exception(FirstUnit.Text + " does not start any valid digram.");
+        var candidates = Data.DIGRAMS[FirstUnit?.Text??""];
+        if (candidates == null || candidates.Count == 0) throw new Exception(FirstUnit?.Text + " does not start any valid digram.");
 
-        XmlNode randomunit;
+        (string, int)? randomunit = null;
         if (flags > 0 || notflags > 0 || unitflags > 0 || unitnotflags > 0)
         {
-            ArrayList candidateunits = new ArrayList();
-            foreach (XmlNode node in candidates.ChildNodes)
+            var candidateunits = new List<(string, int)>();
+            foreach (var node in candidates)
             {
-                int digramflagsint;
-                if (!int.TryParse(node.InnerText, out digramflagsint)) throw new Exception("Generation of random unit failed due to data inconsistencies!");
-                DigramFlags digramflags = (DigramFlags)digramflagsint;
+                DigramFlags digramflags = (DigramFlags)node.Value;
                 if (((flags == DigramFlags.ANY_COMBINATION) || ((flags & digramflags) > 0)) && ((notflags == DigramFlags.ANY_COMBINATION) || ((notflags & digramflags) == 0)))
                 {
                     Unit candidate;
                     try
                     {
-                        candidate = new Unit(node.Attributes["text"].Value);
+                        candidate = new Unit(node.Key);
                     }
                     catch (ArgumentException)
                     {
                         throw new Exception("Generation of random unit failed due to data inconsistencies!");
                     }
 
-                    if ((unitflags == UnitFlags.NO_SPECIAL_RULE || (unitflags & candidate.Flags) > 0) && (unitnotflags == UnitFlags.NO_SPECIAL_RULE || (unitnotflags & candidate.Flags) == 0)) candidateunits.Add(node);
+                    if ((unitflags == UnitFlags.NO_SPECIAL_RULE || (unitflags & candidate.Flags) > 0) && (unitnotflags == UnitFlags.NO_SPECIAL_RULE || (unitnotflags & candidate.Flags) == 0)) candidateunits.Add((node.Key, node.Value));
                 }
             }
 
             if (candidateunits.Count == 0) throw new ArgumentException("No units were found fitting given criteria.");
-            randomunit = (XmlNode)candidateunits[prng.Next(0, candidateunits.Count)];
+            randomunit = candidateunits[prng.Next(0, candidateunits.Count)];
         }
         else
         {
-            randomunit = candidates.ChildNodes[prng.Next(0, candidates.ChildNodes.Count)];
+            var v = candidates.ToList()[prng.Next(0, candidates.Count)];
+            randomunit = (v.Key, v.Value);
         }
 
 
         try
         {
-            SecondUnit = new Unit(randomunit.Attributes["text"].Value);
+            SecondUnit = new Unit(randomunit.Value.Item1);
         }
         catch (ArgumentException)
         {
             throw new Exception("Generation of random unit failed due to data inconsistencies!");
         }
-        int randomdigramflags;
-        if (int.TryParse(randomunit.InnerText, out randomdigramflags)) Flags = (DigramFlags)randomdigramflags;
-        else throw new Exception("Generation of random unit failed due to data inconsistencies!");
+
+        Flags = (DigramFlags) randomunit.Value.Item2;
     }
 
     /// <summary>
@@ -181,18 +179,7 @@ public class Digram
     {
         FirstUnit = first;
         SecondUnit = second;
-        string flagtext;
-        try
-        {
-            flagtext = Data.DigramsData.SelectSingleNode("/digrams/unit[@text='" + FirstUnit.Text + "']/unit[@text='" + SecondUnit.Text + "']").InnerText;
-        }
-        catch (NullReferenceException)
-        {
-            throw new ArgumentException(Text + " is not a valid digram.");
-        }
-        int flags;
-        if (int.TryParse(flagtext, out flags)) Flags = (DigramFlags)flags;
-        else throw new ArgumentException(Text + " is not a valid unit.");
+        Flags = (DigramFlags)Data.DIGRAMS[FirstUnit!.Text][SecondUnit!.Text];
     }
 
     /// <summary>
@@ -201,7 +188,7 @@ public class Digram
     /// <returns>Returns a deep copy of the Digram.</returns>
     public Digram Copy()
     {
-        Digram copy = new Digram(FirstUnit.Copy(), SecondUnit.Copy());
+        Digram copy = new Digram(FirstUnit?.Copy(), SecondUnit?.Copy());
         return copy;
     }
 
