@@ -1,7 +1,42 @@
-namespace PronouncablePasswordGenerator;
+using System.Xml;
+
+namespace PronouncablePasswordGenerator.Generator;
 
 public static class Data
-{
+{    
+	private static XmlDocument _unitsdata;
+	private static XmlDocument _digramsdata;
+
+	public static XmlDocument UnitsData
+	{
+		get
+		{
+			if (_unitsdata == null)
+			{
+				string data = Data.UNITS;
+				_unitsdata = new XmlDocument();
+				_unitsdata.InnerXml = data;
+			}
+
+			return _unitsdata;
+		}
+	}
+
+	public static XmlDocument DigramsData
+	{
+		get
+		{
+			if (_digramsdata == null)
+			{
+				string data = Data.DIGRAMS;
+				_digramsdata = new XmlDocument();
+				_digramsdata.InnerXml = data;
+			}
+
+			return _digramsdata;
+		}
+	}
+	
     public static string DIGRAMS = """
                                    <digrams>
                                      <unit text="a">

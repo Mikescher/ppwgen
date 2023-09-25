@@ -11,9 +11,10 @@
 
     <ItemGroup>
       <None Remove="digrams.xml" />
-      <Resource Include="digrams.xml" />
       <None Remove="units.xml" />
-      <Resource Include="units.xml" />
+      <Resource Include="Generator\digrams.xml" />
+      <Resource Include="Generator\units.xml" />
     </ItemGroup>
+
 
 </Project>

@@ -1,3 +1,5 @@
+using PronouncablePasswordGenerator.Generator;
+
 namespace PronouncablePasswordGenerator;
 
 public class Profile

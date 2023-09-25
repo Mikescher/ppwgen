@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using PronouncablePasswordGenerator.Generator;
 
 namespace PronouncablePasswordGenerator;
 
@@ -6,16 +7,10 @@ public static class Program
 {
     public static void Main()
     {
-        // var minLength = 16;
-        // var useDigits = true;
-        // var caseMode = CaseMode.MixedCase;
-        // var morepronounceable = false;
-        // var symbols = "!@#$%^&*()_+[]{}~`;:,./?<>'\"\\|"; // all typeable characters on a standard 101-key keyboard
-
         var prof = GetProfile();
 
-        var rng = new RNGCryptoServiceProvider();
-
+        var rng = RandomNumberGenerator.Create();
+        
         for (int i = 0; i < prof.Count; i++)
         {
             var gen = PronounceablePassword.Generate(rng, prof.MinLength, prof.UseDigits, prof.Symbols, prof.CaseMode, prof.Morepronounceable);
@@ -24,7 +19,7 @@ public static class Program
         }
     }
 
-    public static Profile GetProfile()
+    private static Profile GetProfile()
     {
         var p = new Profile();
 
@@ -97,7 +92,7 @@ public static class Program
                     continue;
                 }
 
-                if (arg == "--count=" && int.TryParse(arg.Substring("--count=".Length), out var countnum))
+                if (arg.StartsWith("--count=") && int.TryParse(arg.Substring("--count=".Length), out var countnum))
                 {
                     p.Count = countnum;
                     continue;
